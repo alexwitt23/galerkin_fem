@@ -1,0 +1,11 @@
+euler-method: "backward"  # forward or backward
+time-step: 1/8
+num-elements: 11
+bar-length: 1
+# Please format in (x, t) order
+boundary-conditions:
+  initial: >
+    u(x, 0) = np.sin(np.pi * x)
+  Dirichlet-left: u(0, t) = 0
+  Dirichlet-right: u(1, t) = 0
+forcing-function: (np.pi ** 2 - 1)*np.exp(-t)*np.sin(np.pi*x)
