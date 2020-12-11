@@ -311,12 +311,13 @@ def solve(config: dict) -> None:
 
     x = config["nodes"]
 
-    # Create the mass matrix
+    # Create the mass matrix.
     M = create_M(basis_functions, config["elements"])
     M[0, :] = 0.0
     M[-1, :] = 0.0
     M[0, 0] = 1.0
     M[-1, -1] = 1.0
+
     # Create the stiffness matrix
     K = create_K(basis_functions, config["elements"])
     print(f"M matrix:\n{M}")
@@ -357,15 +358,11 @@ def solve(config: dict) -> None:
                 - config["dt"] * np.matmul(K, c)
                 + config["dt"] * forcing
             )
+            # Impose boundary CD
             b[0] = config["dirichlet_left"]
             b[-1] = config["dirichlet_right"]
-            M_imposed = M
-            M_imposed[0, :] = 0.0
-            M_imposed[-1, :] = 0.0
-            M_imposed[0, 0] = 1.0
-            M_imposed[-1, -1] = 1.0
 
-            c = np.matmul(np.linalg.inv(M_imposed), b)
+            c = np.matmul(np.linalg.inv(M), b)
             real_sol = np.expand_dims(analytical_solution(x, t), axis=-1)
             forward_losses.append(np.power(c - real_sol, 2))
             for idx, node in enumerate(config["nodes"]):
@@ -378,7 +375,7 @@ def solve(config: dict) -> None:
         average_losses = np.array([np.mean(loss) for loss in forward_losses])
 
         """
-        # This plots the end temperature for forward euler
+        # This plots the end temperature for Forward Euler
         fig = plt.figure()
         plt.plot(x, forward_losses[-1], label="Forward Euler Temperature")
         plt.legend()
@@ -433,14 +430,10 @@ def solve(config: dict) -> None:
             forcing = np.array([forcing]).transpose()
 
             b = np.matmul(M, c) + config["dt"] * forcing
+            # Impose BC
             b[0] = 0
             b[-1] = 0
-            M_imposed = M
-            M_imposed[0, :] = 0.0
-            M_imposed[-1, :] = 0.0
-            M_imposed[0, 0] = 1.0
-            M_imposed[-1, -1] = 1.0
-            c = np.matmul(np.linalg.inv(M_imposed + config["dt"] * K), b)
+            c = np.matmul(np.linalg.inv(M + config["dt"] * K), b)
             real_sol = np.expand_dims(analytical_solution(x, t), axis=-1)
             backward_losses.append(np.power(c - real_sol, 2))
             for idx, node in enumerate(config["nodes"]):

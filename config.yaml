@@ -1,6 +1,6 @@
 euler-method: "backward"  # forward or backward
-time-step: 1/8
-num-elements: 11
+time-step: 1/551
+num-elements: 10
 bar-length: 1
 # Please format in (x, t) order
 boundary-conditions:
