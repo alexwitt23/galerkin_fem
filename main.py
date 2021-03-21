@@ -13,6 +13,7 @@ from typing import List, Tuple
 
 import numpy as np
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import yaml
@@ -263,6 +264,7 @@ def plot_surface(config: dict, analytical_solution, u_sim: np.ndarray, fig_name:
         X, T, u_sim, cmap=cm.coolwarm, linewidth=0, antialiased=False
     )
 
+
     ax = fig.add_subplot(1, 2, 2, projection="3d")
     surf = ax.plot_surface(x, t, u_a, cmap=cm.coolwarm, linewidth=0, antialiased=False)
     # Customize the z axis.
@@ -275,6 +277,22 @@ def plot_surface(config: dict, analytical_solution, u_sim: np.ndarray, fig_name:
     ax.set_zlabel("u", fontsize=10)
     ax.set_title("Analytical Temperature")
     fig.savefig(_FIGURE_FOLDER / fig_name)
+
+
+    fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
+
+    # Make data.
+
+    # Plot the surface.
+    surf = ax.plot_surface(x, t, u_sim, cmap=cm.coolwarm,
+                      linewidth=0, antialiased=False)
+    ax.set_xlabel("x", fontsize=10)
+    ax.set_ylabel("time", fontsize=10)
+    ax.zaxis.set_rotate_label(True)
+    ax.set_zlabel("temperature", fontsize=10)
+    ax.set_title("Simulated Temperature")
+
+    fig.savefig(_FIGURE_FOLDER / "simulated.jpg")
 
 
 def solve(config: dict) -> None:

@@ -1,5 +1,6 @@
-# TODO
+# 1D Finite Elmenet Heat Equation Solver
 
+This codebase was made for solving 1D heat flow systems.
 
 ## Install
 ```
